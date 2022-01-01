@@ -1,34 +1,26 @@
-const { Client, Collection, Intents } = require('discord.js');
-const { token} = require("./config.json");
-
-//const prefix = '-';
 const fs = require('fs');
+const { Client, Collection, Intents } = require('discord.js');
+const { token } = require('./config.json');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
-
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-
 	client.commands.set(command.data.name, command);
 }
-
-//  incia o bot
-
-client.once('ready', ()=> {
-    console.log('Agu-bot funcionando!');
+// inicia o Agu-bot
+client.once('ready', () => {
+	console.log('Agu-bot funcionando.');
 });
 
-
-
-// comandos no index
+// chama os comandos
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
-	//console.log(interaction);
+
 	const command = client.commands.get(interaction.commandName);
 
 	if (!command) return;
@@ -37,9 +29,8 @@ client.on('interactionCreate', async interaction => {
 		await command.execute(interaction);
 	} catch (error) {
 		console.error(error);
-		await interaction.reply({ content: 'Sem interação', ephemeral: true });
+		return interaction.reply({ content: 'Erro.', ephemeral: true });
 	}
 });
 
 client.login(token);
-
