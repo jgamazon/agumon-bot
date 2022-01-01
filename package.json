@@ -1,0 +1,20 @@
+{
+  "name": "agu-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JJ",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^0.8.2",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.24.0",
+    "discord.js": "^13.4.0-dev.1635897909.28688e2"
+  },
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.1.0"
+  }
+}
