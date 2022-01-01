@@ -1,25 +1,43 @@
-const { Client, Intents } = require('discord.js');
-const Discord = require('discord.js');
-const { token, prefix } = require("./config.json");
+const { Client, Collection, Intents } = require('discord.js');
+const { token} = require("./config.json");
 
+//const prefix = '-';
+const fs = require('fs');
 
-const client = new Discord.Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+client.commands = new Collection();
+
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+
+	client.commands.set(command.data.name, command);
+}
 
 //  incia o bot
 
 client.once('ready', ()=> {
-    console.log('Taaaaichi! Agu-bot funcionando!');
+    console.log('Agu-bot funcionando!');
 });
- 
+
+
+
+// comandos no index
+
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
+	//console.log(interaction);
+	const command = client.commands.get(interaction.commandName);
 
-	const { commandName } = interaction;
+	if (!command) return;
 
-	if (commandName === 'teste') {
-		await interaction.reply('teste 123!');
-	} else if (commandName === 'ajuda') {
-		await interaction.reply('nao');
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'Sem interação', ephemeral: true });
 	}
 });
 
